@@ -90,7 +90,7 @@
     "lodash": "^4.17.21",
     "prettier": "^2.6.2",
     "pretty-format": "^28.1.0",
-    "strip-ansi": "^6.0.1"
+    "strip-ansi": "^7.0.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",
