@@ -41,7 +41,7 @@ Allure reporting for newest Jest Circus v28.1
 1. **Add this package**
 
 ```shell
-yarn add --dev jest-circus-allure-environment
+yarn add --dev jest-circus-allure
 ```
 
 2. **Update `jest.config.js`**
@@ -50,10 +50,16 @@ _See the [testEnvironment docs](https://jestjs.io/docs/en/configuration#testenvi
 
 ```JSON
 {
-  "testEnvironment": "jest-circus-allure-environment",
+  "testEnvironment": "jest-circus-allure",
   "testRunner": "jest-circus/runner"
 }
 ```
+OR use this at the top of your testEnv file
+
+```js
+const AllureEnvironment = require('jest-allure-circus').default
+```
+
 
 3. **Run tests**
 
