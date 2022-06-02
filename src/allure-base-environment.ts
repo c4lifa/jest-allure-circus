@@ -17,8 +17,8 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 			
 			super(config, context);
 
-			if (typeof config.testEnvironmentOptions.testPath === 'string') {
-				this.testPath = config.testEnvironmentOptions.testPath;
+			if (typeof config.projectConfig.testEnvironmentOptions.testPath === 'string') {
+				this.testPath = config.projectConfig.testEnvironmentOptions.testPath;
 			}
 
 			this.testPath = this.initializeTestPath(config, context);
