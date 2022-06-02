@@ -1,11 +1,11 @@
 {
   "name": "jest-allure-circus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/c4lifa/jest-allure-circus.git"
   },
-  "author": "Ryan Parker <ryan.parker3@outlook.com>",
+  "author": "c4lifa",
   "license": "MIT",
   "files": [
     "dist"
