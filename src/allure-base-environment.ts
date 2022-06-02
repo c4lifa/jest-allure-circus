@@ -13,8 +13,8 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 		private readonly testPath: string;
 		private readonly testFileName: string;
 
-		constructor(config: Config.ProjectConfig, context: EnvironmentContext) {
-			// @ts-expect-error (ts(2345))
+		constructor(config: any, context: EnvironmentContext) {
+			
 			super(config, context);
 
 			if (typeof config.testEnvironmentOptions.testPath === 'string') {
@@ -30,14 +30,14 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 			this.global.allure = this.reporter.getImplementation();
 		}
 
-		initializeTestPath(config: Config.ProjectConfig, context: EnvironmentContext) {
-			let testPath = context.testPath ?? '';
+		initializeTestPath(config: any, context: EnvironmentContext) {
+			let testPath = context?.testPath ?? '';
 
-			if (typeof config.testEnvironmentOptions.testPath === 'string') {
-				testPath = testPath?.replace(config.testEnvironmentOptions.testPath, '');
+			if (typeof config.projectConfig.testEnvironmentOptions.testPath === 'string') {
+				testPath = testPath?.replace(config.projectConfig.testEnvironmentOptions.testPath, '');
 			}
 
-			if (typeof config.testEnvironmentOptions.testPath !== 'string') {
+			if (typeof config.projectConfig.testEnvironmentOptions.testPath !== 'string') {
 				testPath = testPath?.replace(config.rootDir, '');
 			}
 
@@ -48,9 +48,9 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 			return testPath;
 		}
 
-		initializeAllureReporter(config: Config.ProjectConfig) {
+		initializeAllureReporter(config: any) {
 			const allureConfig: AllureConfig = {
-				resultsDir: config.testEnvironmentOptions.resultsDir as string ?? 'allure-results'
+				resultsDir: config.projectConfig.testEnvironmentOptions.resultsDir as string ?? 'allure-results'
 			};
 
 			return new AllureReporter({
