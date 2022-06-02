@@ -112,8 +112,9 @@ export default class JestAllureInterface extends Allure {
 		this.reporter.pushStep(allureStep);
 		return new StepWrapper(this.reporter, allureStep);
 	}
-
-	async step<T>(name: string, body: (step: StepInterface) => any): Promise<any> {
+	
+	// @ts-expect-error (ts(1064))
+	async step<T>(name: string, body: (step: StepInterface) => T): T {
 		const wrappedStep = this.startStep(name);
 		let result;
 		try {
@@ -124,7 +125,7 @@ export default class JestAllureInterface extends Allure {
 		}
 
 		if (isPromise(result)) {
-			const promise = result as Promise<any>;
+			const promise = result as T;
 
 			try {
 				const resolved = await promise;

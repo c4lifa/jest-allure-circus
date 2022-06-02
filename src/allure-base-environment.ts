@@ -1,5 +1,5 @@
 import {basename} from 'path';
-import {AllureRuntime, IAllureConfig} from 'allure-js-commons';
+import {AllureRuntime, AllureConfig} from 'allure-js-commons';
 import type {Circus, Config} from '@jest/types';
 
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
@@ -14,6 +14,7 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 		private readonly testFileName: string;
 
 		constructor(config: Config.ProjectConfig, context: EnvironmentContext) {
+			// @ts-expect-error (ts(2345))
 			super(config, context);
 
 			if (typeof config.testEnvironmentOptions.testPath === 'string') {
@@ -48,7 +49,7 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 		}
 
 		initializeAllureReporter(config: Config.ProjectConfig) {
-			const allureConfig: IAllureConfig = {
+			const allureConfig: AllureConfig = {
 				resultsDir: config.testEnvironmentOptions.resultsDir as string ?? 'allure-results'
 			};
 
