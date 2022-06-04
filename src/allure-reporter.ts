@@ -14,7 +14,7 @@ import {
 	Status
 } from 'allure-js-commons';
 import {parseWithComments} from 'jest-docblock';
-import stripAnsi = require('strip-ansi');
+import stripAnsi from 'strip-ansi';
 import _ = require('lodash');
 import prettier = require('prettier/standalone');
 import parser = require('prettier/parser-typescript');
@@ -42,9 +42,9 @@ export default class AllureReporter {
 	}) {
 		this.allureRuntime = options.allureRuntime;
 
-		this.jiraUrl = options.jiraUrl ?? 'https://github.com/ryparker/jest-circus-allure-environment/blob/master/README.md';
+		this.jiraUrl = options.jiraUrl ?? 'https://github.com/c4lifa/jest-allure-circus/blob/master/README.md';
 
-		this.tmsUrl = options.tmsUrl ?? 'https://github.com/ryparker/jest-circus-allure-environment/blob/master/README.md';
+		this.tmsUrl = options.tmsUrl ?? 'https://github.com/c4lifa/jest-allure-circus/blob/master/README.md';
 
 		if (options.environmentInfo) {
 			this.allureRuntime.writeEnvironmentInfo(options.environmentInfo);
@@ -265,43 +265,32 @@ export default class AllureReporter {
 	}
 
 	private handleError(error: Error | any) {
+		var _a;
 		if (Array.isArray(error)) {
 			// Test_done event sends an array of arrays containing errors.
 			error = _.flattenDeep(error)[0];
 		}
-
 		let status = Status.BROKEN;
 		let message = error.name;
-		let trace = error.message;
-
+		let trace = error.stack || error.message; // I changed here
 		if (error.matcherResult) {
 			status = Status.FAILED;
 			const matcherMessage = typeof error.matcherResult.message === 'function' ? error.matcherResult.message() : error.matcherResult.message;
-
 			const [line1, line2, ...restOfMessage] = matcherMessage.split('\n');
-
 			message = [line1, line2].join('\n');
-			trace = restOfMessage.join('\n');
+			trace = error.stack || restOfMessage.join('\n');  // I changed here
 		}
-
-		if (!trace) {
-			trace = error.stack;
-		}
-
 		if (!message && trace) {
 			message = trace;
-			trace = error.stack?.replace(message, 'No stack trace provided');
+			trace = (_a = error.stack) === null || _a === void 0 ? void 0 : _a.replace(message, 'No stack trace provided');
 		}
-
-		if (trace?.includes(message)) {
-			trace = trace?.replace(message, '');
+		if (trace === null || trace === void 0 ? void 0 : trace.includes(message)) {
+			trace = trace === null || trace === void 0 ? void 0 : trace.replace(message, '');
 		}
-
 		if (!message) {
 			message = 'Error. Expand for more details.';
 			trace = error;
 		}
-
 		return {
 			status,
 			message: stripAnsi(message),

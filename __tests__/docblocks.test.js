@@ -11,7 +11,7 @@ test('Ignore Docblock, when located above test', () => {
 
 test('Read Docblock, when located under test', () => {
 	/**
-   * @my-custom-pragma under-test1
+     * @my-custom-pragma under-test1
 	 */
 
 	expect(sum(1, 2)).toBe(3);

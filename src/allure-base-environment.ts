@@ -1,6 +1,6 @@
 import {basename} from 'path';
 import {AllureRuntime, AllureConfig} from 'allure-js-commons';
-import type {Circus, Config} from '@jest/types';
+import type {Circus} from '@jest/types';
 
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import AllureReporter from './allure-reporter';
@@ -55,10 +55,10 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 
 			return new AllureReporter({
 				allureRuntime: new AllureRuntime(allureConfig),
-				jiraUrl: config.testEnvironmentOptions?.jiraUrl as string,
-				tmsUrl: config.testEnvironmentOptions?.tmsUrl as string,
-				environmentInfo: config.testEnvironmentOptions?.environmentInfo as Record<string, any>,
-				categories: config.testEnvironmentOptions?.categories as Array<Record<string, any>>
+				jiraUrl: config.projectConfig.testEnvironmentOptions?.jiraUrl as string,
+				tmsUrl: config.projectConfig.testEnvironmentOptions?.tmsUrl as string,
+				environmentInfo: config.projectConfig.testEnvironmentOptions?.environmentInfo as Record<string, any>,
+				categories: config.projectConfig.testEnvironmentOptions?.categories as Array<Record<string, any>>
 			});
 		}
 
