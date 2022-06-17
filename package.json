@@ -1,6 +1,6 @@
 {
   "name": "jest-allure-circus",
-  "version": "1.0.4",
+  "version": "1.0.12",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/c4lifa/jest-allure-circus.git"
@@ -92,15 +92,14 @@
     "jest-environment-node": "^28.1.0",
     "lodash": "^4.17.21",
     "prettier": "^2.6.2",
-    "pretty-format": "^28.1.0",
-    "strip-ansi": "^7.0.1"
+    "pretty-format": "^28.1.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/allure-js-commons": "^0.0.1",
     "@types/highlight.js": "^10.1.0",
-    "@types/jest": "^28.1.0",
+    "@types/jest": "^28.1.2",
     "@types/lodash": "^4.14.182",
     "@types/node": "^17.0.38",
     "commitizen": "^4.2.4",
@@ -109,7 +108,7 @@
     "eslint-config-xo-typescript": "^0.51.1",
     "eslint-plugin-jest": "^26.4.6",
     "husky": "^8.0.1",
-    "jest": "^28.1.0",
+    "jest": "^28.1.1",
     "lint-staged": "^13.0.0",
     "semantic-release": "^19.0.2",
     "typescript": "^4.7.2",
