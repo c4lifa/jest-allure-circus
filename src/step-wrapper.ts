@@ -37,7 +37,7 @@ export default class StepWrapper {
 	attachment(
 		name: string,
 		content: Buffer | string,
-		type: ContentType
+		type: ContentType,
 	): void {
 		const file = this.reporter.writeAttachment(content, type);
 		this.step.addAttachment(name, type, file);

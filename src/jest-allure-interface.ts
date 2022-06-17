@@ -37,9 +37,16 @@ export enum ContentType {
 	HTML = 'text/html'
 }
 
+export type Labels = {
+	name: string,
+	value: string,
+	index?: number
+}
+
 export default class JestAllureInterface extends Allure {
 	jiraUrl: string;
 	tmsUrl = '';
+	labels: Labels[] = [];
 
 	constructor(
 		private readonly reporter: AllureReporter,
@@ -51,10 +58,10 @@ export default class JestAllureInterface extends Allure {
 	}
 
 	get currentExecutable(): AllureStep | AllureTest | ExecutableItemWrapper {
-		const executable: AllureStep | AllureTest | ExecutableItemWrapper | null =
-      this.reporter.currentStep ??
-      this.reporter.currentTest ??
-			this.reporter.currentExecutable;
+		const executable: AllureStep | AllureTest | ExecutableItemWrapper | null = 
+		this.reporter.currentStep ??
+        this.reporter.currentTest ??
+		this.reporter.currentExecutable;
 
 		if (!executable) {
 			throw new Error('No executable!');
@@ -66,37 +73,38 @@ export default class JestAllureInterface extends Allure {
 	set currentExecutable(executable: AllureStep | AllureTest | ExecutableItemWrapper) {
 		this.reporter.currentExecutable = executable;
 	}
-
-	label(name: string, value: string) {
-		this.currentTest.addLabel(name, value);
+	
+	label(name: string, value: string, index?: number) {
+		this.currentTest ? this.currentTest.addLabel(name, value) : this.labels.push({name: name, value: value, index});
+		this.labels ? this.reporter.labels.push(...this.labels) : null;
 	}
 
-	severity(severity: Severity) {
-		this.label(LabelName.SEVERITY, severity);
+	severity(severity: Severity, index?: number) {
+		this.label(LabelName.SEVERITY, severity, index);
 	}
 
-	tag(tag: string) {
+	tag(tag: string, index?: number) {
 		this.currentTest.addLabel(LabelName.TAG, tag);
 	}
 
-	owner(owner: string) {
-		this.label(LabelName.OWNER, owner);
+	owner(owner: string, index?: number) {
+		this.label(LabelName.OWNER, owner, index);
 	}
 
-	lead(lead: string) {
-		this.label(LabelName.LEAD, lead);
+	lead(lead: string, index?: number) {
+		this.label(LabelName.LEAD, lead, index);
 	}
 
-	epic(epic: string) {
-		this.label(LabelName.EPIC, epic);
+	epic(epic: string, index?: number) {
+		this.label(LabelName.EPIC, epic, index);
 	}
 
-	feature(feature: string) {
-		this.label(LabelName.FEATURE, feature);
+	feature(feature: string, index?: number) {
+		this.label(LabelName.FEATURE, feature, index);
 	}
 
-	story(story: string) {
-		this.label(LabelName.STORY, story);
+	story(story: string, index?: number) {
+		this.label(LabelName.STORY, story, index);
 	}
 
 	issue(name: string) {
@@ -198,10 +206,7 @@ export default class JestAllureInterface extends Allure {
 	}
 
 	get currentTest(): AllureTest {
-		if (this.reporter.currentTest === null) {
-			throw new Error('No test running!');
-		}
-
+		// @ts-expect-error (2322)
 		return this.reporter.currentTest;
 	}
 }

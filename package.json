@@ -1,6 +1,6 @@
 {
   "name": "jest-allure-circus",
-  "version": "1.0.4",
+  "version": "1.0.12",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/c4lifa/jest-allure-circus.git"
@@ -92,8 +92,7 @@
     "jest-environment-node": "^28.1.0",
     "lodash": "^4.17.21",
     "prettier": "^2.6.2",
-    "pretty-format": "^28.1.0",
-    "strip-ansi": "^7.0.1"
+    "pretty-format": "^28.1.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",

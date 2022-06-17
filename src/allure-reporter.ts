@@ -14,13 +14,12 @@ import {
 	Status
 } from 'allure-js-commons';
 import {parseWithComments} from 'jest-docblock';
-import stripAnsi from 'strip-ansi';
 import _ = require('lodash');
 import prettier = require('prettier/standalone');
 import parser = require('prettier/parser-typescript');
 
 import type * as jest from '@jest/types';
-import JestAllureInterface, {ContentType} from './jest-allure-interface';
+import JestAllureInterface, {ContentType, Labels} from './jest-allure-interface';
 import defaultCategories from './category-definitions';
 
 export default class AllureReporter {
@@ -32,6 +31,8 @@ export default class AllureReporter {
 	private readonly jiraUrl: string;
 	private readonly tmsUrl: string;
 	private readonly categories: Category[] = defaultCategories;
+	private readonly testNames: Array<String> = [];
+	labels: Labels[] = [];
 
 	constructor(options: {
 		allureRuntime: AllureRuntime;
@@ -39,6 +40,7 @@ export default class AllureReporter {
 		tmsUrl?: string;
 		environmentInfo?: Record<string, string>;
 		categories?: Category[];
+		labels: Labels[];
 	}) {
 		this.allureRuntime = options.allureRuntime;
 
@@ -90,11 +92,15 @@ export default class AllureReporter {
 		}
 	}
 
-	startSuite(suiteName?: string): void {
-		const scope: AllureGroup | AllureRuntime =
-      this.currentSuite ?? this.allureRuntime;
+	startSuite(suiteName?: string, tests?: Array<Record<string, string>> | null): void {
+		const scope: AllureGroup | AllureRuntime = this.currentSuite ?? this.allureRuntime;
 		const suite: AllureGroup = scope.startGroup(suiteName ?? 'Global');
 		this.pushSuite(suite);
+		if (tests) {
+			for(let i=0;i<=tests.length-1;i++) {
+				this.testNames.push(tests[i].name);
+			}
+		}
 	}
 
 	endSuite(): void {
@@ -153,7 +159,8 @@ export default class AllureReporter {
 		if (this.currentSuite === null) {
 			throw new Error('startTestCase called while no suite is running');
 		}
-
+		console.log()
+		console.log(this.currentSuite)
 		let currentTest = this.currentSuite.startTest(test.name);
 		currentTest.fullName = test.name;
 		currentTest.historyId = createHash('md5')
@@ -187,6 +194,7 @@ export default class AllureReporter {
 			throw new Error('passTestCase called while no test is running');
 		}
 
+		this.attachLabelsInConcurrent(this.currentTest, this.labels);
 		this.currentTest.status = Status.PASSED;
 	}
 
@@ -195,6 +203,7 @@ export default class AllureReporter {
 			throw new Error('pendingTestCase called while no test is running');
 		}
 
+		this.attachLabelsInConcurrent(this.currentTest, this.labels);
 		this.currentTest.status = Status.SKIPPED;
 		this.currentTest.statusDetails = {message: `Test is marked: "${test.mode as string}"`};
 	}
@@ -204,6 +213,7 @@ export default class AllureReporter {
 			throw new Error('failTestCase called while no test is running');
 		}
 
+		this.attachLabelsInConcurrent(this.currentTest, this.labels);
 		const latestStatus = this.currentTest.status;
 
 		// If test already has a failed/broken state, we should not overwrite it
@@ -293,8 +303,8 @@ export default class AllureReporter {
 		}
 		return {
 			status,
-			message: stripAnsi(message),
-			trace: stripAnsi(trace)
+			message: message,
+			trace: trace
 		};
 	}
 
@@ -336,25 +346,28 @@ export default class AllureReporter {
 		}
 	}
 
-	private setAllureLabelsAndLinks(currentTest: AllureTest, labelName: string, value: string) {
-		switch (labelName) {
-			case 'issue':
-				currentTest.addLink(`${this.jiraUrl}${value}`, value, LinkType.ISSUE);
-				break;
-			case 'tms':
-				currentTest.addLink(`${this.tmsUrl}${value}`, value, LinkType.TMS);
-				break;
-			case 'tag':
-			case 'tags':
-				currentTest.addLabel(LabelName.TAG, value);
-				break;
-			case 'milestone':
-				currentTest.addLabel(labelName, value);
-				currentTest.addLabel('epic', value);
-				break;
-			default:
-				currentTest.addLabel(labelName, value);
-				break;
+	private setAllureLabelsAndLinks(currentTest: AllureTest, labelName: string, value: string, index?: number) {
+		// @ts-expect-error (ts(2341))
+		if (currentTest.info.name === this.testNames[index]) {
+			switch (labelName) {
+				case 'issue':
+					currentTest.addLink(`${this.jiraUrl}${value}`, value, LinkType.ISSUE);
+					break;
+				case 'tms':
+					currentTest.addLink(`${this.tmsUrl}${value}`, value, LinkType.TMS);
+					break;
+				case 'tag':
+				case 'tags':
+					currentTest.addLabel(LabelName.TAG, value);
+					break;
+				case 'milestone':
+					currentTest.addLabel(labelName, value);
+					currentTest.addLabel('epic', value);
+					break;
+				default:
+					currentTest.addLabel(labelName, value);
+					break;
+			}
 		}
 	}
 
@@ -380,6 +393,16 @@ export default class AllureReporter {
 		}
 
 		return currentTest;
+	}
+
+	private attachLabelsInConcurrent(currentTest: AllureTest, labels: Labels[]) {
+		if (labels) {
+			let set = new Set(labels);
+			let arr = Array.from(set);
+			for (let i=0;i<=arr.length-1;i++) {
+				this.setAllureLabelsAndLinks(currentTest, arr[i].name, arr[i].value, arr[i].index);
+			}
+		}
 	}
 
 	// TODO: Use if describe blocks are present.
