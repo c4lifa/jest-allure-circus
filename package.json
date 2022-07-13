@@ -99,7 +99,7 @@
     "@semantic-release/git": "^10.0.1",
     "@types/allure-js-commons": "^0.0.1",
     "@types/highlight.js": "^10.1.0",
-    "@types/jest": "^28.1.2",
+    "@types/jest": "^28.1.5",
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.0.3",
     "commitizen": "^4.2.4",
