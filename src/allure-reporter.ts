@@ -346,7 +346,7 @@ export default class AllureReporter {
 
 	private setAllureLabelsAndLinks(currentTest: AllureTest, labelName: string, value: string, index?: number) {
 		// @ts-expect-error (ts(2341))
-		if (currentTest.info.name === this.testNames[index]) {
+		if (index === undefined || currentTest.info.name === this.testNames[index]) {
 			switch (labelName) {
 				case 'issue':
 					currentTest.addLink(`${this.jiraUrl}${value}`, value, LinkType.ISSUE);
