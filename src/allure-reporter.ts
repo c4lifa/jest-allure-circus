@@ -280,13 +280,13 @@ export default class AllureReporter {
 		}
 		let status = Status.BROKEN;
 		let message = error.name;
-		let trace = error.stack || error.message; // I changed here
+		let trace = error.stack || error.message;
 		if (error.matcherResult) {
 			status = Status.FAILED;
 			const matcherMessage = typeof error.matcherResult.message === 'function' ? error.matcherResult.message() : error.matcherResult.message;
 			const [line1, line2, ...restOfMessage] = matcherMessage.split('\n');
 			message = [line1, line2].join('\n');
-			trace = error.stack || restOfMessage.join('\n');  // I changed here
+			trace = error.stack || restOfMessage.join('\n');
 		}
 		if (!message && trace) {
 			message = trace;
@@ -301,8 +301,8 @@ export default class AllureReporter {
 		}
 		return {
 			status,
-			message: message,
-			trace: trace
+			message: message.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''),
+			trace: trace.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
 		};
 	}
 
