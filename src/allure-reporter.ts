@@ -168,7 +168,7 @@ export default class AllureReporter {
 
 		if (test.fn) {
 			const serializedTestCode = test.fn.toString();
-			const {code, comments, pragmas} = this.extractCodeDetails(serializedTestCode);
+			const {comments, pragmas, ...code} = this.extractCodeDetails(serializedTestCode);
 
 			this.setAllureReportPragmas(currentTest, pragmas);
 
@@ -318,7 +318,7 @@ export default class AllureReporter {
 		code = [code.join(check)];
 		code = [prettier.format(code[0], {parser: 'typescript', plugins: [parser]})];
 
-		return {...code, comments, pragmas};
+		return {comments, pragmas, code};
 	}
 
 	private extractDocBlock(contents: string): string {
