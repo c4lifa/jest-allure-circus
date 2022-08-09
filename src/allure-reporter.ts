@@ -301,8 +301,8 @@ export default class AllureReporter {
 		}
 		return {
 			status,
-			message: message.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''),
-			trace: trace.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+			message: this.replaceANSITags(message),
+			trace: this.replaceANSITags(trace)
 		};
 	}
 
@@ -310,13 +310,15 @@ export default class AllureReporter {
 		const docblock = this.extractDocBlock(serializedTestCode);
 		const {pragmas, comments} = parseWithComments(docblock);
 
-		let code = serializedTestCode.replace(docblock, '');
+		let code = [serializedTestCode.replace(docblock, '')];
 
 		// Add newline before the first expect()
-		code = code.split(/(expect[\S\s.]*)/g).join('\n');
-		code = prettier.format(code, {parser: 'typescript', plugins: [parser]});
+		code = code[0].split(/(expect[\S\s.]*)/g)
+		const check = code[0].includes('wait_for_') ? '' : '\n'
+		code = [code.join(check)];
+		code = [prettier.format(code[0], {parser: 'typescript', plugins: [parser]})];
 
-		return {code, comments, pragmas};
+		return {...code, comments, pragmas};
 	}
 
 	private extractDocBlock(contents: string): string {
@@ -413,5 +415,10 @@ export default class AllureReporter {
 		} while ((parent = parent?.parent));
 
 		return testPath;
+	}
+
+	private replaceANSITags(entry: string) {
+		
+		return entry.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
 	}
 }
