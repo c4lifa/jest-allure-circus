@@ -168,11 +168,11 @@ export default class AllureReporter {
 
 		if (test.fn) {
 			const serializedTestCode = test.fn.toString();
-			const {comments, pragmas, ...code} = this.extractCodeDetails(serializedTestCode);
+			const {comments, pragmas, code} = this.extractCodeDetails(serializedTestCode);
 
 			this.setAllureReportPragmas(currentTest, pragmas);
 
-			currentTest.description = `${comments}\n### Test\n\`\`\`typescript\n${code}\n\`\`\`\n`;
+			currentTest.description = `${comments}\n### Test\n\`\`\`typescript\n${code[0]}\n\`\`\`\n`;
 		}
 
 		if (!test.fn) {
