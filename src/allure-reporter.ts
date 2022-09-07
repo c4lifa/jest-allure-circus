@@ -32,6 +32,7 @@ export default class AllureReporter {
 	private readonly tmsUrl: string;
 	private readonly categories: Category[] = defaultCategories;
 	private readonly testNames: Array<String> = [];
+	private readonly addCodeInReport: boolean = true
 	labels: Labels[] = [];
 
 	constructor(options: {
@@ -41,6 +42,7 @@ export default class AllureReporter {
 		environmentInfo?: Record<string, string>;
 		categories?: Category[];
 		labels: Labels[];
+		addCodeInReport?: boolean
 	}) {
 		this.allureRuntime = options.allureRuntime;
 
@@ -57,6 +59,10 @@ export default class AllureReporter {
 				...this.categories,
 				...options.categories
 			];
+		}
+
+		if ('addCodeInReport' in options) {
+			this.addCodeInReport = Boolean(options.addCodeInReport)
 		}
 
 		this.allureRuntime.writeCategoriesDefinitions(this.categories);
@@ -166,17 +172,17 @@ export default class AllureReporter {
 			.digest('hex');
 		currentTest.stage = Stage.RUNNING;
 
-		if (test.fn) {
-			const serializedTestCode = test.fn.toString();
-			const {comments, pragmas, code} = this.extractCodeDetails(serializedTestCode);
+		if (this.addCodeInReport) {
+			if (test.fn) {
+				const serializedTestCode = test.fn.toString();
+				const {comments, pragmas, code} = this.extractCodeDetails(serializedTestCode);
 
-			this.setAllureReportPragmas(currentTest, pragmas);
+				this.setAllureReportPragmas(currentTest, pragmas);
 
-			currentTest.description = `${comments}\n### Test\n\`\`\`typescript\n${code[0]}\n\`\`\`\n`;
-		}
-
-		if (!test.fn) {
-			currentTest.description = '### Test\nCode is not available.\n';
+				currentTest.description = `${comments}\n### Test\n\`\`\`typescript\n${code[0]}\n\`\`\`\n`;
+			} else {
+				currentTest.description = '### Test\nCode is not available.\n';
+			}
 		}
 
 		if (state.parentProcess?.env?.JEST_WORKER_ID) {
