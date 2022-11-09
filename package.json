@@ -100,7 +100,7 @@
     "@types/allure-js-commons": "^0.0.1",
     "@types/highlight.js": "^10.1.0",
     "@types/jest": "^28.1.6",
-    "@types/lodash": "^4.14.182",
+    "@types/lodash": "^4.14.188",
     "@types/node": "^18.7.2",
     "commitizen": "^4.2.5",
     "conventional-changelog-conventionalcommits": "^5.0.0",
