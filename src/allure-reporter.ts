@@ -377,7 +377,7 @@ export default class AllureReporter {
 		const pathsArray = testPath.split(pathDelimiter);
 
 		const [parentSuite, ...suites] = pathsArray;
-		const subSuite = suites.pop();
+		const subSuite = this.currentSuite;
 
 		if (parentSuite) {
 			currentTest.addLabel(LabelName.PARENT_SUITE, parentSuite);
@@ -389,7 +389,7 @@ export default class AllureReporter {
 		}
 
 		if (subSuite) {
-			currentTest.addLabel(LabelName.SUB_SUITE, subSuite);
+			currentTest.addLabel(LabelName.SUB_SUITE, subSuite.testResultContainer.name);
 		}
 
 		return currentTest;
