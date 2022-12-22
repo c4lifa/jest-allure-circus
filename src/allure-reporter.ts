@@ -395,7 +395,7 @@ export default class AllureReporter {
 		}
 
 		if (subSuite) {
-			currentTest.addLabel(LabelName.SUB_SUITE, subSuite.testResultContainer.name);
+			currentTest.addLabel(LabelName.SUB_SUITE, subSuite.name);
 		}
 
 		return currentTest;
