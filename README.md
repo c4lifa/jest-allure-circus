@@ -246,6 +246,22 @@ test('validation message appears, when email field is skipped', () => {
 })
 ```
 
+### :bug: AllureId
+
+Test Case ID in Allure.
+
+Example:
+
+```TS
+test('validation message appears, when email field is skipped', () => {
+  /**
+   * @allureId 92066
+   */
+
+  ...
+})
+```
+
 ## 👩‍🎓 Advanced
 
 ### 🎛 Global Allure API
@@ -330,4 +346,9 @@ allure.tag(name: string): void;
  * Add a custom label to the report of the current test.
  */
 allure.label(name: string, value: string): void;
+
+/**
+ * Add Test Case ID in Allure.
+ */
+allure.allureId(id: string, index?: number): void;
 ```
