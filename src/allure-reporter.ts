@@ -370,6 +370,9 @@ export default class AllureReporter {
 					currentTest.addLabel(labelName, value);
 					currentTest.addLabel('epic', value);
 					break;
+				case 'allureId':
+					currentTest.addLabel(LabelName.AS_ID, value);
+					break;
 				default:
 					currentTest.addLabel(labelName, value);
 					break;
@@ -395,7 +398,7 @@ export default class AllureReporter {
 		}
 
 		if (subSuite) {
-			currentTest.addLabel(LabelName.SUB_SUITE, subSuite.testResultContainer.name);
+			currentTest.addLabel(LabelName.SUB_SUITE, subSuite.name);
 		}
 
 		return currentTest;

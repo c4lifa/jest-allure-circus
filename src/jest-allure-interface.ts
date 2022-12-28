@@ -209,4 +209,8 @@ export default class JestAllureInterface extends Allure {
 		// @ts-expect-error (2322)
 		return this.reporter.currentTest;
 	}
+
+	allureId(id: string, index?: number): void {
+		this.label(LabelName.AS_ID, id, index);
+	}
 }
