@@ -270,9 +270,9 @@ An instance of the allure runtime will be available on the Node global variable.
 
 ```TS
 /**
- * Returns the Allure test instance for the currently running test.
+ * Returns the Allure test instance for the currently running test if one is running, otherwise null.
  */
-allure.currentTest(): AllureTest;
+allure.currentTest: AllureTest | null;
 
 /**
  * Adds a description to the report of the current test. Supports markdown.
