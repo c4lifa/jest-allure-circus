@@ -22,6 +22,46 @@ import type * as jest from '@jest/types';
 import JestAllureInterface, {ContentType, Labels} from './jest-allure-interface';
 import defaultCategories from './category-definitions';
 
+interface MatcherResult {
+    message: string | (() => string);
+}
+
+interface MatchingError extends Error {
+    matcherResult: MatcherResult;
+}
+
+interface ErrorResult {
+    status: Status;
+    message?: string;
+    trace?: string;
+}
+
+function isMatchingError(error: Error): error is MatchingError {
+	return 'matcherResult' in error;
+}
+
+function extractMatcherResultMessage(error: MatchingError) {
+	const matcherResult = error.matcherResult;
+	return typeof matcherResult?.message === 'function' ? matcherResult.message() : matcherResult?.message;
+}
+
+function getPrototypeChain<T>(obj: T): T[] {
+    const chain: T[] = [];
+
+    // Check if the value is neither an object nor a function
+    if (typeof obj !== "object" && typeof obj !== "function" || obj === null) {
+        return chain;
+    }
+
+    while (obj) {
+        chain.push(obj);
+        obj = Object.getPrototypeOf(obj);
+    }
+
+    return chain;
+}
+
+
 export default class AllureReporter {
 	currentExecutable: ExecutableItemWrapper | null = null;
 	private readonly allureRuntime: AllureRuntime;
@@ -278,37 +318,23 @@ export default class AllureReporter {
 		this.suites.pop();
 	}
 
-	private handleError(error: Error | any) {
-		var _a;
-		if (Array.isArray(error)) {
-			// Test_done event sends an array of arrays containing errors.
-			error = _.flattenDeep(error)[0];
+	private handleError(error: unknown): ErrorResult {
+		const flattenedError: MatchingError | Error | undefined | unknown = Array.isArray(error) ? _.flattenDeep(error)?.[0] : error;
+		if (!flattenedError) {
+			console.error('Error of executable, e.g., test or step, is not defined. Has the api of jest(-circus) for failing or erroring an executable changed or have you thrown a falsy value within a test? Continuing considering the executable to be broken.');
+			return {status: Status.BROKEN};
 		}
-		let status = Status.BROKEN;
-		let message = error.name;
-		let trace = error.stack || error.message;
-		if (error.matcherResult) {
-			status = Status.FAILED;
-			const matcherMessage = typeof error.matcherResult.message === 'function' ? error.matcherResult.message() : error.matcherResult.message;
-			const [line1, line2, ...restOfMessage] = matcherMessage.split('\n');
-			message = [line1, line2].join('\n');
-			trace = error.stack || restOfMessage.join('\n');
+		if (!_.isError(flattenedError)) {
+			console.error('Error of executable, e.g., test or step, is not an instance of Error. Has the api of jest(-circus) for failing or erroring an executable changed or have you thrown a value that is not an instance of Error within a test? Continuing considering the executable to be broken.');
+			return {status: Status.BROKEN};
 		}
-		if (!message && trace) {
-			message = trace;
-			trace = (_a = error.stack) === null || _a === void 0 ? void 0 : _a.replace(message, 'No stack trace provided');
-		}
-		if (trace === null || trace === void 0 ? void 0 : trace.includes(message)) {
-			trace = trace === null || trace === void 0 ? void 0 : trace.replace(message, '');
-		}
-		if (!message) {
-			message = 'Error. Expand for more details.';
-			trace = error;
-		}
+		const _isMatchingError = isMatchingError(flattenedError);
+		const errorName = flattenedError.name ?? 'Error';
+		const messageWithoutNamePrefix = this.removeANSITags(_isMatchingError ? extractMatcherResultMessage(flattenedError) : flattenedError.message);
 		return {
-			status,
-			message: this.replaceANSITags(message),
-			trace: this.replaceANSITags(trace)
+			status: _isMatchingError ? Status.FAILED : Status.BROKEN,
+			message: messageWithoutNamePrefix ? `${errorName}: ${messageWithoutNamePrefix}` : errorName,
+			trace: flattenedError.stack ? this.removeANSITags(flattenedError.stack) : 'No stack trace provided.',
 		};
 	}
 
@@ -426,8 +452,7 @@ export default class AllureReporter {
 		return testPath;
 	}
 
-	private replaceANSITags(entry: string) {
-		
+	private removeANSITags(entry: string) {
 		return entry.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
 	}
 }
