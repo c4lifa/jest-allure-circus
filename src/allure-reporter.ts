@@ -86,9 +86,9 @@ export default class AllureReporter {
 	}) {
 		this.allureRuntime = options.allureRuntime;
 
-		this.jiraUrl = options.jiraUrl ?? 'https://github.com/c4lifa/jest-allure-circus/blob/master/README.md';
+		this.jiraUrl = options.jiraUrl ?? 'https://github.com/askui/jest-allure-circus/blob/master/README.md';
 
-		this.tmsUrl = options.tmsUrl ?? 'https://github.com/c4lifa/jest-allure-circus/blob/master/README.md';
+		this.tmsUrl = options.tmsUrl ?? 'https://github.com/askui/jest-allure-circus/blob/master/README.md';
 
 		if (options.environmentInfo) {
 			this.allureRuntime.writeEnvironmentInfo(options.environmentInfo);
