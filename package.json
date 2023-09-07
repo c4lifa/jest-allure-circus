@@ -1,11 +1,10 @@
 {
-  "name": "jest-allure-circus",
+  "name": "@askui/jest-allure-circus",
   "version": "1.0.21",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/askui/jest-allure-circus.git"
   },
-  "author": "c4lifa",
   "license": "MIT",
   "files": [
     "dist"
