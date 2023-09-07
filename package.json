@@ -13,7 +13,8 @@
   "main": "dist",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepare": "rimraf dist && tsc",
+    "prepare": "npm run build",
+    "build": "rimraf dist && tsc",
     "test": "rimraf allure-results && npm run prepare && jest",
     "lint": "xo src",
     "fix": "xo src --fix",
@@ -46,7 +47,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn lint"
+      "pre-push": "lint"
     }
   },
   "lint-staged": {
@@ -99,7 +100,6 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/allure-js-commons": "^0.0.1",
-    "@types/highlight.js": "^10.1.0",
     "@types/jest": "^29.2.4",
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.7.2",

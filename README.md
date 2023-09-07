@@ -41,7 +41,7 @@ Allure reporting for newest Jest Circus v28.1
 1. **Add this package**
 
 ```shell
-yarn add --dev jest-allure-circus
+npm install --dev jest-allure-circus
 ```
 
 2. **Update `jest.config.js`**
@@ -64,7 +64,7 @@ const AllureEnvironment = require('jest-allure-circus').default
 3. **Run tests**
 
 ```shell
-yarn test
+npm run test
 ```
 
 4. **Open the Allure report**

@@ -19,10 +19,8 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 			const parentHandleTestEvent = Reflect.get(this, 'handleTestEvent');
             this.handleTestEvent = async (event, state) => {
                 var _a;
-                // @ts-expect-error does not recognize overloaded function
+                // @ts-ignore
                 await parentHandleTestEvent?.call(this, event, state);
-                // Console.log(`Event: ${event.name}`);
-                // Console.log({event});
                 switch (event.name) {
                     case 'setup':
                         break;
