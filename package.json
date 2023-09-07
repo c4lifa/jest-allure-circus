@@ -1,11 +1,10 @@
 {
-  "name": "jest-allure-circus",
-  "version": "1.0.21",
+  "name": "@askui/jest-allure-circus",
+  "version": "1.0.22",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/c4lifa/jest-allure-circus.git"
+    "url": "git+https://github.com/askui/jest-allure-circus.git"
   },
-  "author": "c4lifa",
   "license": "MIT",
   "files": [
     "dist"
@@ -13,10 +12,12 @@
   "main": "dist",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepare": "rimraf dist && tsc",
+    "prepare": "npm run build",
+    "build": "rimraf dist && tsc",
     "test": "rimraf allure-results && npm run prepare && jest",
     "lint": "xo src",
-    "fix": "xo src --fix"
+    "fix": "xo src --fix",
+    "release": "semantic-release"
   },
   "jest": {
     "testEnvironment": "./dist",
@@ -45,7 +46,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn lint"
+      "pre-push": "lint"
     }
   },
   "lint-staged": {
@@ -55,7 +56,7 @@
   },
   "release": {
     "branches": [
-      "main"
+      "master"
     ],
     "plugins": [
       [
@@ -98,7 +99,6 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/allure-js-commons": "^0.0.1",
-    "@types/highlight.js": "^10.1.0",
     "@types/jest": "^29.2.4",
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.7.2",
@@ -137,7 +137,7 @@
   ],
   "description": "[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)\r [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)\r [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)\r [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)",
   "bugs": {
-    "url": "https://github.com/c4lifa/jest-allure-circus/issues"
+    "url": "https://github.com/askui/jest-allure-circus/issues"
   },
-  "homepage": "https://github.com/c4lifa/jest-allure-circus#readme"
+  "homepage": "https://github.com/askui/jest-allure-circus#readme"
 }

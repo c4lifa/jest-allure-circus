@@ -41,7 +41,7 @@ Allure reporting for newest Jest Circus v28.1
 1. **Add this package**
 
 ```shell
-yarn add --dev jest-circus-allure
+npm install --dev jest-allure-circus
 ```
 
 2. **Update `jest.config.js`**
@@ -50,7 +50,7 @@ _See the [testEnvironment docs](https://jestjs.io/docs/en/configuration#testenvi
 
 ```JSON
 {
-  "testEnvironment": "jest-circus-allure",
+  "testEnvironment": "jest-allure-circus",
   "testRunner": "jest-circus/runner"
 }
 ```
@@ -64,7 +64,7 @@ const AllureEnvironment = require('jest-allure-circus').default
 3. **Run tests**
 
 ```shell
-yarn test
+npm run test
 ```
 
 4. **Open the Allure report**
@@ -270,9 +270,9 @@ An instance of the allure runtime will be available on the Node global variable.
 
 ```TS
 /**
- * Returns the Allure test instance for the currently running test.
+ * Returns the Allure test instance for the currently running test if one is running, otherwise null.
  */
-allure.currentTest(): AllureTest;
+allure.currentTest: AllureTest | null;
 
 /**
  * Adds a description to the report of the current test. Supports markdown.

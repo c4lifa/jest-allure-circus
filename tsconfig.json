@@ -8,6 +8,7 @@
     "sourceMap": true,
     "isolatedModules": true,
     "importsNotUsedAsValues": "error",
+    "skipLibCheck": true,
     "esModuleInterop": false,
     "noImplicitReturns": true,
     "resolveJsonModule": true,
