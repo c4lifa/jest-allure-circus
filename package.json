@@ -1,6 +1,6 @@
 {
   "name": "jest-allure-circus",
-  "version": "1.0.19",
+  "version": "1.0.22-snapshot-2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/c4lifa/jest-allure-circus.git"
@@ -16,7 +16,9 @@
     "prepare": "rimraf dist && tsc",
     "test": "rimraf allure-results && npm run prepare && jest",
     "lint": "xo src",
-    "fix": "xo src --fix"
+    "fix": "xo src --fix",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "jest": {
     "testEnvironment": "./dist",
