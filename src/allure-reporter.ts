@@ -22,6 +22,11 @@ import type * as jest from '@jest/types';
 import JestAllureInterface, {ContentType, Labels} from './jest-allure-interface';
 import defaultCategories from './category-definitions';
 
+export enum AllureReporterSuitesStrategy {
+	legacy = 'legacy',
+	latestDescribe = 'latestDescribe',
+}
+
 export default class AllureReporter {
 	currentExecutable: ExecutableItemWrapper | null = null;
 	private readonly allureRuntime: AllureRuntime;
@@ -32,7 +37,8 @@ export default class AllureReporter {
 	private readonly tmsUrl: string;
 	private readonly categories: Category[] = defaultCategories;
 	private readonly testNames: Array<String> = [];
-	private readonly addCodeInReport: boolean = true
+	private readonly addCodeInReport: boolean = true;
+	private readonly suitesStrategy: AllureReporterSuitesStrategy;
 	labels: Labels[] = [];
 
 	constructor(options: {
@@ -42,7 +48,8 @@ export default class AllureReporter {
 		environmentInfo?: Record<string, string>;
 		categories?: Category[];
 		labels: Labels[];
-		addCodeInReport?: boolean
+		addCodeInReport?: boolean;
+		suitesStrategy: AllureReporterSuitesStrategy;
 	}) {
 		this.allureRuntime = options.allureRuntime;
 
@@ -64,6 +71,8 @@ export default class AllureReporter {
 		if ('addCodeInReport' in options) {
 			this.addCodeInReport = Boolean(options.addCodeInReport)
 		}
+
+		this.suitesStrategy = options.suitesStrategy;
 
 		this.allureRuntime.writeCategoriesDefinitions(this.categories);
 	}
@@ -175,13 +184,9 @@ export default class AllureReporter {
 		if (this.addCodeInReport) {
 			if (test.fn) {
 				const serializedTestCode = test.fn.toString();
-				const {comments, pragmas, code} = this.extractCodeDetails(serializedTestCode);
+				const {pragmas} = this.extractCodeDetails(serializedTestCode);
 
 				this.setAllureReportPragmas(currentTest, pragmas);
-
-				currentTest.description = `${comments}\n### Test\n\`\`\`typescript\n${code[0]}\n\`\`\`\n`;
-			} else {
-				currentTest.description = '### Test\nCode is not available.\n';
 			}
 		}
 
@@ -381,6 +386,14 @@ export default class AllureReporter {
 	}
 
 	private addSuiteLabelsToTestCase(currentTest: AllureTest, testPath: string): AllureTest {
+		if (this.suitesStrategy === AllureReporterSuitesStrategy.latestDescribe) {
+			if (this.currentSuite) {
+				currentTest.addLabel(LabelName.SUITE, this.currentSuite.name);
+			}
+
+			return currentTest;
+		}
+
 		const isWindows = os.type() === 'Windows_NT';
 		const pathDelimiter = isWindows ? '\\' : '/';
 		const pathsArray = testPath.split(pathDelimiter);

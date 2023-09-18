@@ -127,6 +127,7 @@ Options that can be passed into the `environmentOptions` property of your `jest.
 | environmentInfo | Key value pairs that will appear under the environment section of the Allure report                              | `{}`                  |
 | categories      | Array of custom categories you wish to see in the Allure report. [See an example](./src/category-definitions.ts) | `[]`                  |
 | testPath        | Path to your test files. This path will be subtracted from the Allure report when organizing tests into suites.  | `Jest.config.rootDir` |
+| suitesStrategy  | Strategy to create suites: `legacy` (path based) or `latestDescribe` to use latest describe as suite name        | `legacy`              |
 
 ## 📈 DocBlocks
 

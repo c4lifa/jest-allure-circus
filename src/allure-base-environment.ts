@@ -3,7 +3,7 @@ import {AllureRuntime, AllureConfig} from 'allure-js-commons';
 import type {Circus} from '@jest/types';
 
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
-import AllureReporter from './allure-reporter';
+import AllureReporter, {AllureReporterSuitesStrategy} from './allure-reporter';
 import type {Labels} from './jest-allure-interface';
 
 function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base: TBase): TBase {
@@ -200,6 +200,7 @@ function extendAllureBaseEnvironment<TBase extends typeof JestEnvironment>(Base:
 				environmentInfo: config.projectConfig.testEnvironmentOptions?.environmentInfo as Record<string, any>,
 				categories: config.projectConfig.testEnvironmentOptions?.categories as Array<Record<string, any>>,
 				labels: [] as Labels[],
+				suitesStrategy: config.projectConfig.testEnvironmentOptions?.suitesStrategy ?? AllureReporterSuitesStrategy.legacy,
 			});
 		}
 
